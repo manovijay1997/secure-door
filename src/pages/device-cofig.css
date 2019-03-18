@@ -1,0 +1,93 @@
+.box1 {
+	text-align: center;
+	padding: 40px;
+	max-width: 300px;
+	margin: auto;
+	margin-top: 130px;
+	background-color: teal;
+	border-radius: 20px;
+	color: white;
+	height: 250px;
+}
+.box1 p {
+	font-size: 20px;
+	text-align: left;
+	margin-bottom: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.box2 {
+	margin-left: 10px;
+}
+.box2 .button {
+	border-radius: 10px;
+	border-color: transparent;
+	outline-color: transparent;
+	background-color: white;
+	font-size: 16px;
+	font-weight: 800;
+	font-family: Arial, Helvetica, sans-serif;
+	color: teal;
+	transition-duration: 0.4s;
+	margin-top: 10px;
+}
+.box2 .button:hover {
+	background-color: teal;
+	color: white;
+}
+.usernameInput {
+	width: 200px;
+	margin-right: 80px;
+	border-color: transparent;
+	outline-color: transparent;
+	color: black;
+	padding: 5px;
+	margin-bottom: 20px;
+	border-color: rgb(211, 211, 211);
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-left-color: transparent;
+	background-color: teal;
+	transition-duration: .6s;
+	margin-left: 20px;
+}
+.usernameInput:hover {
+	background-color: white;
+	border-color: transparent;
+	border-radius: 6px;
+}
+.passwordInput {
+	width: 200px;
+	border-color: transparent;
+	outline-color: transparent;
+	color: black;
+	padding: 5px;
+	margin-bottom: 20px;
+	border-color: rgb(211, 211, 211);
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-left-color: transparent;
+	background-color: teal;
+	transition-duration: .6s;
+}
+.passwordInput:hover {
+	background-color: white;
+	border-color: transparent;
+	border-radius: 6px;
+}
+.passwordImg {
+	width: 20px;
+	height: 20px;
+}
+.hideandshowButton {
+	border-color: transparent;
+	background-color: transparent;
+	outline-color: transparent;
+}
+/* 
+.background {
+	background-color: teal;
+	border-style: solid;
+	border-color: black;
+	height: 100%;
+	width: 100%;
+} */
