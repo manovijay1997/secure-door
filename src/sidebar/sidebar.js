@@ -14,10 +14,11 @@ class Slide extends Component {
 	}
 
 	render() {
+		console.log("props value", (event) => this.props.onchange(event))
 		return (
 			<div className="slidebar">
 				<div className="slidehead">
-					<button type="button" className="slideCloseButton" onClick={this.props.onchange}>
+					<button type="button" className="slideCloseButton" onClick={(event) => this.props.onchange(event)}>
 						<img src={close} className="slideCloseTag" alt="close button" />
 					</button>
 					<h1 className="heading">Gadgets</h1>

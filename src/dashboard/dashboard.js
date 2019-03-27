@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './dashboard.css';
 import logo from '../Images/logo.jpg';
-import menu from '../Images/menuicon.png';
+//import menu from '../Images/menuicon.png';
 import Slide from '../sidebar/sidebar';
 import Camera from '../Images/dashboard images/doorbell.png';
 import Phone from '../Images/dashboard images/phone-call.png';
@@ -14,7 +14,11 @@ class Dashboard extends Component {
 		menu: true
 	};
 	change = (event) => {
+		const Menu = this.state.menu
 		this.setState({ menu: !this.state.menu });
+		if (this.state.menu === false) {
+			return false;
+		}
 		event.preventDefault();
 		console.log('state menu is', this.state.menu);
 	};
@@ -49,7 +53,7 @@ class Dashboard extends Component {
 	render() {
 		return (
 			<div>
-				{this.state.menu ? null : <Slide onchange={this.change} OnNav={this.nav} />}
+				{this.state.menu ? null : <Slide onchange={(event) => this.change(event)} OnNav={this.nav} />}
 				<img src={logo} className="dashimg" />
 				<Header OnSide={this.change} />
 				{/* <header className="header">

@@ -6,7 +6,11 @@ import './device-cofig.css';
 import Hide from '../Images/Password/hide.png';
 import Show from '../Images/Password/show.png';
 import Toast from './device_config_toast/toast';
-import io from 'socket.io-client';
+import Mqtt from './mqtt/mqtt';
+import { Connector, subscribe } from 'mqtt-react';
+
+
+
 
 class Device_config extends Component {
 	state = {
@@ -14,8 +18,10 @@ class Device_config extends Component {
 		pop: false,
 		password: true,
 		toggleImage: true,
-		address: 'http://192.168.4.1:80',
-		link: true
+		//address: 'http://192.168.4.1:80',
+		mqttshow: true,
+		message: " ",
+		subscribe: " "
 	};
 	//used to open side bar menu
 	change = (event) => {
@@ -31,6 +37,16 @@ class Device_config extends Component {
 			this.setState({ pop: true });
 		}
 	};
+	message = (event) => {
+		event.preventDefault();
+		this.setState({ message: event.target.value });
+		//console.log("mesage in device config is ", this.state.message)
+	}
+	subscribe = (event) => {
+		event.preventDefault();
+		this.setState({ subscribe: event.target.value });
+		//console.log("mesage in device config is ", this.state.message)
+	}
 
 	//used to password hide and show
 	toggleImage = (event) => {
@@ -56,67 +72,58 @@ class Device_config extends Component {
 		event.preventDefault();
 	};
 	submit = (event) => {
-		/* const app = require('express')();
-		var http = require('http').Server(app);
-		var io = require('socket.io-client')(http);
-
-		app.listen('192.168.4.1');
-		io.on('connection', function(socket) {
-			socket.emit('news', { hello: 'world' });
-		}); */
-		console.log('in function');
-		//const socket = io.connect('port:80', { port: 80, reconnection: false });
-		//const socket = io.connect('192.168.4.1:80', { reconnection: false });
-		//var socket = require('socket.io-client')('192.168.4.1');
-		/* socket.on('connect', () => {
-			console.log('vijay');
-		}); */
-		/* const { address } = this.state;
-		const socket = io.connect(address);
-		socket.on('connect', () => {
-			console.log('connected');
-		}); */
-
-		//var socket = io.connect('192.168.4.1:80', { reconnection: false });
-		this.setState({ link: !this.state.link });
-		console.log(this.state.link);
-		var socket = io.connect('http://localhost:3000');
-		if (this.state.link === true) {
-			socket.on('connect', () => {
-				console.log('connected');
-			});
-		} else if (this.state.link === false) {
-			socket.on('disconnect', () => {
-				console.log('disconnect');
-			});
-		}
 		event.preventDefault();
+		this.setState({ mqttshow: !this.state.mqttshow });
+		console.log("mqtt is", this.state.mqttshow);
 	};
 
 	render() {
+		// var mqtt = require('mqtt')
+		// var host = "ws://broker.hivemq.com";
+		// var port = 8000;
+		// var client = mqtt.connect(host, port, "vijay")
+
+		// client.on('connect', function () {
+		// 	client.subscribe('presence', function (err) {
+		// 		if (!err) {
+		// 			client.publish('presence', 'Hello mqtt')
+		// 		}
+		// 	})
+		// })
+
+		// client.on('message', function (topic, message) {
+		// 	// message is Buffer
+		// 	console.log(message.toString())
+		// 	client.end()
+		// })
+		const { message, subscribe } = this.state;
 		return (
 			<div>
+
 				{this.state.menu ? null : <Slide onchange={this.change} OnNav={this.nav} />}
 				<img src={logo} className="dashimg" />
 				<Header OnSide={this.change} />
 				{this.state.pop ? null : <Toast OnPop={this.pop} />}
+				{this.state.mqttshow ? null : <Mqtt message={message} onsubscribe={subscribe} ></Mqtt>}
+				{/* <Connector mqttProps="ws://broker.hivemq.com:8000"> */}
 				<div className="background">
 					<div className="box1">
 						<div className="box2">
-							<p>SSID</p>
-							<input className="usernameInput" type="text" />
-							<p>Password</p>
-							<input className="passwordInput" type={this.state.toggleImage ? 'password' : 'text'} />
+							<p>Message</p>
+							<input className="usernameInput" type="text" value={this.state.message} onChange={(event) => this.message(event)} />
+							<p>Subscribe</p>
+							<input className="passwordInput" value={this.state.subscribe} onChange={(event) => this.subscribe(event)} type={this.state.toggleImage ? 'password' : 'text'} />
 							<button className="hideandshowButton" onClick={(event) => this.toggleImage(event)}>
 								<img src={this.state.toggleImage ? Hide : Show} className="passwordImg" />
 							</button>
 							<br />
 							<button type="button" className="button" onClick={(event) => this.submit(event)}>
 								Submit
-							</button>
+								</button>
 						</div>
 					</div>
 				</div>
+				{/* </Connector> */}
 			</div>
 		);
 	}
