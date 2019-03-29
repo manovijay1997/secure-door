@@ -7,7 +7,8 @@ import Hide from '../Images/Password/hide.png';
 import Show from '../Images/Password/show.png';
 import Toast from './device_config_toast/toast';
 import Mqtt from './mqtt/mqtt';
-import { Connector, subscribe } from 'mqtt-react';
+import Paho from "paho-mqtt";
+//import { Connector, subscribe } from 'mqtt-react';
 
 
 
@@ -21,7 +22,8 @@ class Device_config extends Component {
 		//address: 'http://192.168.4.1:80',
 		mqttshow: true,
 		message: " ",
-		subscribe: " "
+		subscribe: "",
+		messageValue: ""
 	};
 	//used to open side bar menu
 	change = (event) => {
@@ -39,7 +41,7 @@ class Device_config extends Component {
 	};
 	message = (event) => {
 		event.preventDefault();
-		this.setState({ message: event.target.value });
+		this.setState({ messageValue: event.target.value });
 		//console.log("mesage in device config is ", this.state.message)
 	}
 	subscribe = (event) => {
@@ -73,6 +75,7 @@ class Device_config extends Component {
 	};
 	submit = (event) => {
 		event.preventDefault();
+		this.setState({ message: this.state.messageValue });
 		this.setState({ mqttshow: !this.state.mqttshow });
 		console.log("mqtt is", this.state.mqttshow);
 	};
@@ -96,7 +99,65 @@ class Device_config extends Component {
 		// 	console.log(message.toString())
 		// 	client.end()
 		// })
-		const { message, subscribe } = this.state;
+		//setInterval(this.state.mqttshow = true, 10);
+		//setInterval(this.state.mqttshow = false, 1000)
+		//const { message, subscribe } = this.state;
+
+		//new
+		var client;
+		var timeout = 3000;
+		var mqtt = require('mqtt');
+		var port = 8080;
+		var host = "test.mosquitto.org";
+		var client, message, clientID = "vj", Con = false;
+
+		const connect = () => {
+			client = new Paho.Client(host, port, clientID);
+			client.connect({ onSuccess: connected, onFailure: onConnectionLost, timeout: timeout });
+			console.log("hello")
+			// Con = true;
+			// client = new Paho.Client(host, port, clientID);
+			// client.connect({ onSuccess: subscribe, onFailure: onConnectionLost, timeout: timeout });
+
+		}
+		const connected = () => {
+			console.log("connected to ", host, " and port is ", port)
+
+		}
+		const subscribe = () => {
+			//console.log("connected to ", host, " and port is ", port)
+			console.log("subscribe");
+			client.subscribe("jarvis");
+			message = new Paho.Message("ID:" + clientID + " " + this.props.message);
+			message.destinationName = "jarvis"
+			client.send(message);
+			client.onMessageArrived = onMessageArrived();
+		}
+		// const reconnect = () => {
+		//     client = new Paho.Client(host, port, "vijay");
+		//     client.connect({ onSuccess: subscribe, onFailure: onConnectionLost, timeout: timeout });
+		// }
+		const onConnectionLost = (responseObject) => {
+			if (responseObject.errorCode !== 0) {
+				console.log("onConnectionLost:" + responseObject.errorMessage);
+			}
+			setTimeout(connect, 1000)
+		}
+		const onMessageArrived = (message) => {
+			console.log("onMessageArrived:" + message.payloadString);
+		}
+		// const connect = () => {
+		//     var options = {
+		//         onSuccess: onConnected,
+		//         timeout
+		//     }
+		//     client = mqtt.connect("broker.hivemq.com")
+		//     client.on("connect", { options })
+		// }
+		const onConnected = () => {
+			alert("connected");
+			console.log("connected")
+		}
 		return (
 			<div>
 
@@ -104,25 +165,27 @@ class Device_config extends Component {
 				<img src={logo} className="dashimg" />
 				<Header OnSide={this.change} />
 				{this.state.pop ? null : <Toast OnPop={this.pop} />}
-				{this.state.mqttshow ? null : <Mqtt message={message} onsubscribe={subscribe} ></Mqtt>}
+
+				{connect()}
 				{/* <Connector mqttProps="ws://broker.hivemq.com:8000"> */}
 				<div className="background">
 					<div className="box1">
 						<div className="box2">
 							<p>Message</p>
-							<input className="usernameInput" type="text" value={this.state.message} onChange={(event) => this.message(event)} />
+							<input className="usernameInput" type="text" onChange={(event) => this.message(event)} />
 							<p>Subscribe</p>
 							<input className="passwordInput" value={this.state.subscribe} onChange={(event) => this.subscribe(event)} type={this.state.toggleImage ? 'password' : 'text'} />
 							<button className="hideandshowButton" onClick={(event) => this.toggleImage(event)}>
 								<img src={this.state.toggleImage ? Hide : Show} className="passwordImg" />
 							</button>
 							<br />
-							<button type="button" className="button" onClick={(event) => this.submit(event)}>
+							<button type="button" className="button" onClick={subscribe}>
 								Submit
-								</button>
+							</button>
 						</div>
 					</div>
 				</div>
+				{/* <Mqtt message={message} onsubscribe={subscribe} ></Mqtt> */}
 				{/* </Connector> */}
 			</div>
 		);
